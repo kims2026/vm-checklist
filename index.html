@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KIM'S CLUB · VM 체크리스트</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+:root{--red:#e11d48;--red-d:#be123c;--red-l:#fef2f2;--dark:#1a1712;--muted:#7a7060;--bg:#fafaf9;--border:#e5e1d8;--green:#22a034;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);font-family:'Pretendard',sans-serif;color:var(--dark);max-width:500px;margin:0 auto;min-height:100vh;padding-bottom:40px;}
+
+.hdr{background:#fff;padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.hdr-logo{font-size:17px;font-weight:900;letter-spacing:-.5px;}
+.hdr-back{font-size:22px;cursor:pointer;background:none;border:none;font-family:inherit;}
+
+/* 메인 홈 */
+.home-title{padding:30px 20px 20px;}
+.home-title h1{font-size:28px;font-weight:900;line-height:1.2;}
+.home-title h1 em{color:var(--red);font-style:normal;}
+.home-title p{font-size:13px;color:var(--muted);margin-top:6px;}
+
+.menu-btn{display:flex;align-items:center;gap:14px;width:calc(100% - 40px);margin:10px 20px;padding:20px;border-radius:16px;border:none;cursor:pointer;font-family:inherit;text-align:left;font-size:15px;font-weight:700;transition:all .15s;}
+.menu-btn-main{background:var(--red);color:#fff;}
+.menu-btn-main:hover{background:var(--red-d);}
+.menu-btn-sub{background:#fff;color:var(--dark);border:1px solid var(--border);}
+.menu-btn-sub:hover{border-color:var(--red);}
+.menu-btn .ico{font-size:24px;}
+.menu-btn .arrow{margin-left:auto;font-size:20px;opacity:.6;}
+
+/* 입력 폼 */
+.form-section{padding:20px;}
+.form-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.5px;}
+.form-input, .form-select, .form-textarea{
+  width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;
+  font-size:15px;font-family:inherit;background:#fff;font-weight:500;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus{outline:none;border-color:var(--red);}
+.form-textarea{resize:vertical;min-height:100px;}
+.form-group{margin-bottom:18px;}
+
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.cat-btn{padding:16px;border:1.5px solid var(--border);border-radius:12px;background:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+.cat-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
+
+.photo-area{border:2px dashed var(--border);border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;background:#fff;transition:all .15s;}
+.photo-area:hover{border-color:var(--red);}
+.photo-area.has-img{padding:0;border-style:solid;overflow:hidden;position:relative;}
+.photo-area img{width:100%;display:block;}
+.photo-area .ico{font-size:36px;margin-bottom:8px;}
+.photo-area .photo-hint{font-size:13px;color:var(--muted);}
+.photo-area .photo-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;}
+
+.btn-submit{
+  width:calc(100% - 40px);margin:20px;padding:16px;background:var(--red);color:#fff;
+  border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:460px;
+  box-shadow:0 -4px 12px rgba(0,0,0,.08);
+}
+.btn-submit:hover{background:var(--red-d);}
+.btn-submit:disabled{background:#d1d1d1;cursor:not-allowed;}
+
+/* 이력 */
+.list-item{background:#fff;margin:10px 20px;padding:16px;border-radius:12px;border:1px solid var(--border);cursor:pointer;}
+.list-item img{width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px;}
+.list-item-title{font-size:15px;font-weight:800;margin-bottom:4px;}
+.list-item-meta{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;}
+.list-item-memo{font-size:13px;color:var(--dark);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.5;}
+.list-empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px;}
+
+/* 필터 */
+.filter-bar{display:flex;gap:6px;padding:10px 20px;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.filter-chip{padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.filter-chip.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+/* 토스트 */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* 로딩 */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
+.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<!-- 홈 화면 -->
+<div id="homeView">
+  <div class="hdr">
+    <div class="hdr-logo">KIM'S CLUB</div>
+    <span></span>
+  </div>
+  <div class="home-title">
+    <h1>디지털<br>VM <em>체크리스트</em></h1>
+    <p>모바일 현장 점검 및 VMD 관리 시스템</p>
+  </div>
+  <button class="menu-btn menu-btn-main" onclick="showView('register')">
+    <span class="ico">📋</span>
+    <div>
+      <div>새 점검 등록</div>
+      <div style="font-size:12px;font-weight:500;opacity:.8;margin-top:3px">현장 점검 시작하기</div>
+    </div>
+    <span class="arrow">›</span>
+  </button>
+  <button class="menu-btn menu-btn-sub" onclick="showView('history')">
+    <span class="ico">📅</span>
+    <div>
+      <div>점검 월별 피드백</div>
+      <div style="font-size:12px;font-weight:500;color:var(--muted);margin-top:3px">수정 및 삭제 가능</div>
+    </div>
+    <span class="arrow">›</span>
+  </button>
+</div>
+
+<!-- 등록 화면 -->
+<div id="registerView" class="hidden">
+  <div class="hdr">
+    <button class="hdr-back" onclick="showView('home')">←</button>
+    <div class="hdr-logo">새 점검 등록</div>
+    <span></span>
+  </div>
+  <div class="form-section">
+    <div class="form-group">
+      <label class="form-label">지점</label>
+      <select class="form-select" id="inStore">
+        <option value="">-- 선택하세요 --</option>
+        <option>강서점</option><option>강남점</option><option>분당점</option><option>송파점</option>
+        <option>평촌점</option><option>부천점</option><option>야탑점</option><option>불광점</option>
+        <option>신구로점</option><option>구의점</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">카테고리</label>
+      <div class="cat-grid">
+        <button type="button" class="cat-btn" data-cat="농산" onclick="selCat(this)">🥬 농산</button>
+        <button type="button" class="cat-btn" data-cat="수산" onclick="selCat(this)">🐟 수산</button>
+        <button type="button" class="cat-btn" data-cat="축산" onclick="selCat(this)">🥩 축산</button>
+        <button type="button" class="cat-btn" data-cat="공산" onclick="selCat(this)">📦 공산</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">상품명</label>
+      <input type="text" class="form-input" id="inProduct" placeholder="예: 수입과일 바나나">
+    </div>
+    <div class="form-group">
+      <label class="form-label">현장 사진</label>
+      <div class="photo-area" id="photoArea" onclick="document.getElementById('fileInput').click()">
+        <div class="ico">📸</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">사진 촬영 또는 선택</div>
+        <div class="photo-hint">터치해서 카메라 또는 갤러리 열기</div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">메모 / 특이사항</label>
+      <textarea class="form-textarea" id="inMemo" placeholder="진열 상태, 개선점 등을 적어주세요"></textarea>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+  <button class="btn-submit" id="btnSave" onclick="savePoint()">점검 저장</button>
+</div>
+
+<!-- 이력 화면 -->
+<div id="historyView" class="hidden">
+  <div class="hdr">
+    <button class="hdr-back" onclick="showView('home')">←</button>
+    <div class="hdr-logo">점검 이력</div>
+    <span></span>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="filterStore(this, '')">전체 지점</button>
+    <button class="filter-chip" onclick="filterStore(this, '강서점')">강서</button>
+    <button class="filter-chip" onclick="filterStore(this, '강남점')">강남</button>
+    <button class="filter-chip" onclick="filterStore(this, '분당점')">분당</button>
+    <button class="filter-chip" onclick="filterStore(this, '송파점')">송파</button>
+    <button class="filter-chip" onclick="filterStore(this, '평촌점')">평촌</button>
+    <button class="filter-chip" onclick="filterStore(this, '부천점')">부천</button>
+    <button class="filter-chip" onclick="filterStore(this, '야탑점')">야탑</button>
+    <button class="filter-chip" onclick="filterStore(this, '불광점')">불광</button>
+    <button class="filter-chip" onclick="filterStore(this, '신구로점')">신구로</button>
+    <button class="filter-chip" onclick="filterStore(this, '구의점')">구의</button>
+  </div>
+  <div id="historyList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAq1KOZtnMuRUVR7brp_cDTtGhTbdOsZkQ",
+  authDomain: "kims-checklist.firebaseapp.com",
+  projectId: "kims-checklist",
+  storageBucket: "kims-checklist.firebasestorage.app",
+  messagingSenderId: "880283689093",
+  appId: "1:880283689093:web:7f0ce14ada5f10b20e89ec",
+  measurementId: "G-Q20N8V5K71"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+window.query = query;
+window.orderBy = orderBy;
+window.firebaseReady = true;
+</script>
+
+<script>
+let selectedCat = '';
+let selectedPhoto = '';  // base64
+let currentFilterStore = '';
+
+// 뷰 전환
+function showView(name){
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('registerView').classList.add('hidden');
+  document.getElementById('historyView').classList.add('hidden');
+  if(name==='home') document.getElementById('homeView').classList.remove('hidden');
+  if(name==='register') {
+    document.getElementById('registerView').classList.remove('hidden');
+    resetForm();
+  }
+  if(name==='history') {
+    document.getElementById('historyView').classList.remove('hidden');
+    loadHistory();
+  }
+  window.scrollTo(0,0);
+}
+
+// 카테고리 선택
+function selCat(btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCat = btn.dataset.cat;
+}
+
+// 사진 처리 (압축)
+function handlePhoto(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      // 압축: 최대 800px 너비
+      const canvas = document.createElement('canvas');
+      const maxW = 800;
+      const ratio = img.width > maxW ? maxW / img.width : 1;
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      selectedPhoto = canvas.toDataURL('image/jpeg', 0.7);
+      showPreview(selectedPhoto);
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showPreview(dataUrl){
+  const area = document.getElementById('photoArea');
+  area.classList.add('has-img');
+  area.innerHTML = `
+    <img src="${dataUrl}">
+    <button class="photo-remove" onclick="event.stopPropagation();removePhoto()">✕</button>
+  `;
+}
+
+function removePhoto(){
+  selectedPhoto = '';
+  const area = document.getElementById('photoArea');
+  area.classList.remove('has-img');
+  area.innerHTML = `
+    <div class="ico">📸</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">사진 촬영 또는 선택</div>
+    <div class="photo-hint">터치해서 카메라 또는 갤러리 열기</div>
+  `;
+  document.getElementById('fileInput').value = '';
+}
+
+// 저장
+async function savePoint(){
+  const store = document.getElementById('inStore').value;
+  const product = document.getElementById('inProduct').value.trim();
+  const memo = document.getElementById('inMemo').value.trim();
+
+  if(!store) return toast('지점을 선택하세요');
+  if(!selectedCat) return toast('카테고리를 선택하세요');
+  if(!product) return toast('상품명을 입력하세요');
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.textContent = '저장 중...';
+
+  try{
+    await window.addDoc(window.collection(window.db, 'checklist'), {
+      store, category: selectedCat, product, memo,
+      photo: selectedPhoto,
+      createdAt: new Date().toISOString(),
+      yearMonth: new Date().toISOString().slice(0,7),
+    });
+    toast('✅ 저장 완료');
+    setTimeout(()=>showView('home'), 1000);
+  } catch(e) {
+    console.error(e);
+    toast('❌ 저장 실패: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '점검 저장';
+  }
+}
+
+function resetForm(){
+  document.getElementById('inStore').value='';
+  document.getElementById('inProduct').value='';
+  document.getElementById('inMemo').value='';
+  selectedCat='';
+  selectedPhoto='';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  removePhoto();
+  const btn = document.getElementById('btnSave');
+  btn.disabled = false;
+  btn.textContent = '점검 저장';
+}
+
+// 이력 조회
+async function loadHistory(){
+  const listEl = document.getElementById('historyList');
+  listEl.innerHTML = '<div class="loading"><span class="spinner"></span>불러오는 중...</div>';
+
+  try{
+    const q = window.query(window.collection(window.db, 'checklist'), window.orderBy('createdAt', 'desc'));
+    const snapshot = await window.getDocs(q);
+
+    const items = [];
+    snapshot.forEach(d => items.push({ id: d.id, ...d.data() }));
+
+    if(items.length === 0){
+      listEl.innerHTML = '<div class="list-empty">아직 등록된 점검이 없습니다</div>';
+      return;
+    }
+
+    const filtered = currentFilterStore ? items.filter(i => i.store === currentFilterStore) : items;
+
+    if(filtered.length === 0){
+      listEl.innerHTML = '<div class="list-empty">이 지점의 점검 기록이 없습니다</div>';
+      return;
+    }
+
+    let html = '';
+    filtered.forEach(item => {
+      const date = new Date(item.createdAt);
+      const dateStr = `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+      html += `
+        <div class="list-item">
+          ${item.photo ? `<img src="${item.photo}">` : ''}
+          <div class="list-item-title">[${item.category}] ${item.product}</div>
+          <div class="list-item-meta">
+            <span>📍 ${item.store}</span>
+            <span>🕐 ${dateStr}</span>
+          </div>
+          ${item.memo ? `<div class="list-item-memo">${item.memo.replace(/\n/g,'<br>')}</div>` : ''}
+          <div style="text-align:right;margin-top:10px">
+            <button onclick="deleteItem('${item.id}')" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-family:inherit;font-weight:700">🗑 삭제</button>
+          </div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+
+  } catch(e){
+    console.error(e);
+    listEl.innerHTML = `<div class="list-empty" style="color:var(--red)">❌ 불러오기 실패<br><br><small>${e.message}</small></div>`;
+  }
+}
+
+function filterStore(btn, store){
+  currentFilterStore = store;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadHistory();
+}
+
+async function deleteItem(id){
+  if(!confirm('이 점검을 삭제할까요?')) return;
+  try{
+    await window.deleteDoc(window.doc(window.db, 'checklist', id));
+    toast('🗑 삭제 완료');
+    loadHistory();
+  } catch(e){
+    toast('❌ 삭제 실패');
+  }
+}
+
+// 토스트
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// 전역 노출
+window.showView = showView;
+window.selCat = selCat;
+window.handlePhoto = handlePhoto;
+window.removePhoto = removePhoto;
+window.savePoint = savePoint;
+window.filterStore = filterStore;
+window.deleteItem = deleteItem;
+
+// 시작
+setTimeout(()=>{
+  if(!window.firebaseReady){
+    toast('⚠ Firebase 연결 중... 잠시만요');
+  }
+}, 2000);
+</script>
+</body>
+</html>
